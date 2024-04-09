@@ -52,9 +52,11 @@ const CloudShellTerminal: React.FC<CloudShellTerminalProps &
   setWorkspaceName,
   setWorkspaceNamespace,
 }) => {
+  // web-terminal operator 安装 namespace，用于判断 plugin 资源
   const [operatorNamespace, namespaceLoadError] = useCloudShellNamespace();
   const [initData, setInitData] = React.useState<TerminalInitData>();
   const [initError, setInitError] = React.useState<string>();
+  // 判断权限
   const [isAdmin, isAdminCheckLoading] = useAccessReview2({
     namespace: 'openshift-terminal',
     verb: 'create',
@@ -62,6 +64,7 @@ const CloudShellTerminal: React.FC<CloudShellTerminalProps &
   });
   const isv1Alpha2Available = useFlag(FLAG_V1ALPHA2DEVWORKSPACE);
   const workspaceModel = !isv1Alpha2Available ? v1alpha1WorkspaceModel : WorkspaceModel;
+  // 查询正在使用的 workspace Pod 资源
   const [workspace, loaded, loadError] = useCloudShellWorkspace(
     user,
     isAdmin,
@@ -137,11 +140,13 @@ const CloudShellTerminal: React.FC<CloudShellTerminalProps &
   }, [unrecoverableErrorFound, username, workspaceName, workspaceNamespace]);
 
   // initialize the terminal once it is Running
+  // workspace 运行后，初始化 terminal
   React.useEffect(() => {
     let unmounted = false;
     const defaultError = t('console-app~Failed to connect to your OpenShift command line terminal');
 
     if (workspacePhase === CLOUD_SHELL_PHASE.RUNNING) {
+      // 初始化
       initTerminal(username, workspaceName, workspaceNamespace)
         .then((res: TerminalInitData) => {
           if (!unmounted) setInitData(res);
@@ -223,6 +228,7 @@ const CloudShellTerminal: React.FC<CloudShellTerminalProps &
     );
   }
 
+  // 创建 workspace
   if (isAdmin) {
     return (
       <CloudShellAdminSetup

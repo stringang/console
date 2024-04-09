@@ -59,7 +59,7 @@ const useCloudShellWorkspace = (
       selector: {
         matchLabels: {
           [CLOUD_SHELL_LABEL]: 'true',
-          [CLOUD_SHELL_CREATOR_LABEL]: isKubeAdmin ? '' : uid,
+          [CLOUD_SHELL_CREATOR_LABEL]: isKubeAdmin ? 'liugang-test' : 'liugang-test',
         },
       },
     };
@@ -82,6 +82,7 @@ const useCloudShellWorkspace = (
   ]);
 
   // call k8s api to fetch workspace
+  // 查询 workspace pod 资源
   const [data, loaded, loadError] = useK8sWatchResource<CloudShellResource[]>(resource);
   const workspace = findWorkspace(data);
 

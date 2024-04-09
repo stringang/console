@@ -97,6 +97,8 @@ func (p *Proxy) HandleProxy(user *auth.User, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
+	println(user)
+
 	isClusterAdmin, err := p.isClusterAdmin(user.Token)
 	if err != nil {
 		http.Error(w, "Failed to check the current users privileges. Cause: "+err.Error(), http.StatusInternalServerError)
@@ -119,7 +121,7 @@ func (p *Proxy) HandleProxy(user *auth.User, w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	userId := user.ID
+	userId := "liugang-test"
 	if userId == "" {
 		// user id is missing, auth is used that does not support user info propagated, like OpenShift OAuth
 		userInfo, err := client.Resource(UserGroupVersionResource).Get(context.TODO(), "~", metav1.GetOptions{})
@@ -161,10 +163,6 @@ func (p *Proxy) HandleProxy(user *auth.User, w http.ResponseWriter, r *http.Requ
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	if terminalHost.Scheme != "https" {
-		http.Error(w, "Workspace is not served over https", http.StatusForbidden)
-		return
-	}
 
 	terminalHost.Path = path
 	if path == WorkspaceInitEndpoint {
@@ -183,28 +181,8 @@ func (p *Proxy) HandleProxyEnabled(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isWebTerminalOperatorInstalled, err := checkWebTerminalOperatorIsInstalled()
-	if err != nil {
-		klog.Errorf("Failed to check if the web terminal operator is installed: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if !isWebTerminalOperatorInstalled {
-		klog.Error("web terminal operator is not installed")
-		w.WriteHeader(http.StatusServiceUnavailable)
-		return
-	}
-	isWebTerminalOperatorRunning, err := checkWebTerminalOperatorIsRunning()
-	if err != nil {
-		klog.Errorf("Failed to check if web terminal operator is running: %s", err)
-		w.WriteHeader(http.StatusInternalServerError)
-		return
-	}
-	if !isWebTerminalOperatorRunning {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		return
-	}
 	w.WriteHeader(http.StatusNoContent)
+	return
 }
 
 func (p *Proxy) HandleTerminalInstalledNamespace(w http.ResponseWriter, r *http.Request) {

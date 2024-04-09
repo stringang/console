@@ -103,6 +103,7 @@ export const newCloudShellWorkSpace = (
     namespace: workspaceNamespace,
     labels: {
       [CLOUD_SHELL_LABEL]: 'true',
+      [CLOUD_SHELL_CREATOR_LABEL]: 'liugang-test',
     },
     annotations: {
       [CLOUD_SHELL_RESTRICTED_ANNOTATION]: 'true',

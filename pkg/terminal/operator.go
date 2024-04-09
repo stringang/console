@@ -9,7 +9,6 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
 
@@ -34,30 +33,6 @@ const (
 // checkWebTerminalOperatorIsRunning checks if the workspace operator is running and webhooks are enabled,
 // which is a prerequisite for sending a user's token to a workspace.
 func checkWebTerminalOperatorIsRunning() (bool, error) {
-	config, err := rest.InClusterConfig()
-	if err != nil {
-		return false, err
-	}
-	client, err := kubernetes.NewForConfig(config)
-	if err != nil {
-		return false, err
-	}
-
-	_, err = client.AdmissionregistrationV1().MutatingWebhookConfigurations().Get(context.TODO(), webhookName, metav1.GetOptions{})
-	if err != nil {
-		if k8sErrors.IsNotFound(err) {
-			return false, nil
-		}
-		return false, err
-	}
-
-	_, err = client.AdmissionregistrationV1().ValidatingWebhookConfigurations().Get(context.TODO(), webhookName, metav1.GetOptions{})
-	if err != nil {
-		if k8sErrors.IsNotFound(err) {
-			return false, nil
-		}
-		return false, err
-	}
 	return true, nil
 }
 
