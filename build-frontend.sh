@@ -3,6 +3,6 @@
 set -e
 
 pushd frontend
-yarn install
+yarn install --registry=https://registry.npmmirror.com
 yarn run build
 popd

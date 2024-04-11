@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console
+  namespace: openshift-operators
+  annotations:
+    config.openshift.io/inject-proxy: console-operator
+    include.release.openshift.io/self-managed-high-availability: "true"
+    include.release.openshift.io/single-node-developer: "true"
+    capability.openshift.io/name: Console
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: console
+  template:
+    metadata:
+      annotations:
+      labels:
+        name: console
+    spec:
+      containers:
+        - name: console
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          image: stringang/console:latest-20240409
+          ports:
+            - containerPort: 9000
+              name: http
+          command:
+            - /opt/bridge/bin/bridge
+          args:
+            - "--listen=http://0.0.0.0:9000"
+            - "--k8s-auth=bearer-token"
+            - "--k8s-mode=off-cluster"
+            - "--k8s-mode-off-cluster-endpoint=https://kubernetes.default.svc"
+            - "--k8s-mode-off-cluster-skip-verify-tls=true"
+            - "--public-dir=/opt/bridge/static"
+            - "--user-auth=disabled"
+            - "--k8s-auth-bearer-token=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhLUWZxcXo3UjNyejJjOVNHNFlrVldBN2JWXzUwOTByeU9namNRQU5QLTQifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtdG9rZW4tbnQybm0iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdCIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImQ0MDJkMTFiLWE4NmUtNGQ3Yi1iYTc2LTQyNTgxYjM0NDJlNSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQifQ.am-jsAALyXMGjxZJ7Sh5302EI4a061ekUfY_CcRD3f8y7JLdOTpKB-SqxaPRexFKZQ3RbM3egZnoz5iTa2NXwkQGvmd5c66Er57rrEKZOU7OenKGcnBuVej-F5VdIpYfM93Zdz7FKUFx07L_PlHTw-taA8y4PRfsHn14aOnUB8pma3sv1ri8O3SGiEga7489XbyMQmbM1FdyfFol5aO13JqGn2o_avFtFH7fGgfoL5BgW6aaMoPGiAPn86qDnKqEHvqNWsCfQMEo7c5LukK1Fr2xc8qTHqCy4I2suGtOwf5GMLhnmvdxkQXNgHljjPZ9Z2YnLNNrl8xDqOPzgAywYw"
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: KUBERNETES_SERVICE_HOST
+              value: 10.255.0.50
+            - name: KUBERNETES_SERVICE_PORT
+              value: "6443"
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "10m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+              scheme: HTTP
+
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: default-console
+subjects:
+  - kind: ServiceAccount
+    name: default
+    namespace: openshift-operators
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+
+---
+# 自定义权限
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: cluster-operator
+rules:
+  - verbs:
+      - get
+      - list
+      - watch
+    apiGroups:
+      - '*'
+    resources:
+      - '*'
+  - verbs:
+      - get
+      - list
+      - watch
+    nonResourceURLs:
+      - '*'
+  - verbs:
+      - impersonate
+    apiGroups:
+      - ''
+    resources:
+      - serviceaccounts
+      - users
+      - groups
+  - verbs:
+      - get
+      - list
+      - watch
+      - create
+      - delete
+      - deletecollection
+      - patch
+      - update
+    apiGroups:
+      - ''
+    resources:
+      - pods
+      - pods/attach
+      - pods/exec
+      - pods/portforward
+      - pods/proxy
+      - pods/eviction
