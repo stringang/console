@@ -396,9 +396,6 @@
         "data-quickstart-id": "qs-nav-topology",
         "data-test-id": "topology-header"
       }
-    },
-    "flags": {
-      "required": ["OPENSHIFT"]
     }
   },
   {
