@@ -15,6 +15,7 @@
     "clean": "rm -rf ./public/dist",
     "dev": "yarn clean && yarn generate && REACT_REFRESH=true NODE_OPTIONS=--max-old-space-size=4096 yarn ts-node ./node_modules/.bin/webpack serve --mode=development --progress",
     "dev-once": "yarn clean && yarn generate && NODE_OPTIONS=--max-old-space-size=4096 yarn ts-node ./node_modules/.bin/webpack --mode=development",
+    "dev-debug": "NODE_OPTIONS=--max-old-space-size=4096 TS_NODE_COMPILER_OPTIONS='{\"module\":\"commonjs\"}' TS_NODE_TRANSPILE_ONLY=true TS_NODE_DEBUG=true node --inspect-brk --require ts-node/register ./node_modules/.bin/webpack --mode=development",
     "build": "yarn clean && yarn generate && NODE_ENV=production NODE_OPTIONS=--max-old-space-size=4096 yarn ts-node ./node_modules/.bin/webpack --mode=production",
     "check-cycles": "CHECK_CYCLES=true yarn dev-once",
     "coverage": "jest --coverage .",

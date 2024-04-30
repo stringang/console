@@ -263,6 +263,7 @@ const config: Configuration = {
     ]),
     extractCSS,
     virtualModules,
+    // console plugin 打包
     new ConsoleActivePluginsModule(resolvePluginPackages(), virtualModules),
     ...(REACT_REFRESH
       ? [
@@ -275,7 +276,7 @@ const config: Configuration = {
       : []),
   ],
   devtool: 'cheap-module-source-map',
-  stats: 'minimal',
+  stats: 'verbose',
 };
 
 if (CHECK_CYCLES === 'true') {
