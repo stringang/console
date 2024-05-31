@@ -410,6 +410,28 @@ const AppContents: React.FC<{}> = () => {
       />
 
       <LazyRoute
+        path="/k8s/ns/:ns/services/~new"
+        exact
+        kind="Service"
+        loader={() =>
+          import(
+            './custom-services/CustomServicePage' /* webpackChunkName: "create-custom-service" */
+          ).then((m) => m.CustomServicePage)
+        }
+      />
+
+      <LazyRoute
+        path="/k8s/ns/:ns/services/:name/edit"
+        exact
+        kind="Service"
+        loader={() =>
+          import(
+            './custom-services/CustomServicePage' /* webpackChunkName: "edit-custom-service" */
+          ).then((m) => m.CustomServicePage)
+        }
+      />
+
+      <LazyRoute
         path="/k8s/ns/:ns/routes/~new"
         exact
         kind="Route"

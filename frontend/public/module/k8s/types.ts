@@ -609,6 +609,23 @@ export type RouteKind = {
   };
 } & K8sResourceCommon;
 
+export type ServicePort = {
+  name: string;
+  protocol: string;
+  port: string | number;
+  targetPort: string | number;
+};
+
+export type ServiceKind = {
+  spec: {
+    selector: object;
+    ports: ServicePort[];
+    type: string;
+    clusterIP: string;
+    externalTrafficPolicy: string;
+  };
+} & K8sResourceCommon;
+
 export type TemplateParameter = {
   name: string;
   value?: string;

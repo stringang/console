@@ -40,6 +40,7 @@ import {
   DeploymentModel,
   RouteModel,
   VolumeSnapshotModel,
+  ServiceModel,
 } from '../../models';
 
 export const kebabOptionsToMenu = (options: KebabOption[]): KebabMenuOption[] => {
@@ -298,6 +299,9 @@ const kebabFactory: KebabFactory = {
         break;
       case RouteModel.kind:
         href = `/k8s/ns/${obj.metadata.namespace}/routes/${obj.metadata.name}/edit`;
+        break;
+      case ServiceModel.kind:
+        href = `/k8s/ns/${obj.metadata.namespace}/services/${obj.metadata.name}/edit`;
         break;
       default:
         href = `${resourceObjPath(obj, kind.crd ? referenceForModel(kind) : kind.kind)}/yaml`;

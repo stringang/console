@@ -568,10 +568,12 @@ kind: Service
 metadata:
   name: example
 spec:
+  type: ClusterIP
   selector:
     app: MyApp
   ports:
-  - protocol: TCP
+  - name: example
+    protocol: TCP
     port: 80
     targetPort: 9376
 `,

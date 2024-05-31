@@ -201,7 +201,9 @@ export const baseDetailsPages = ImmutableMap<ResourceMapKey, ResourceMapValue>()
     ),
   )
   .set(referenceForModel(ServiceModel), () =>
-    import('./service' /* webpackChunkName: "service" */).then((m) => m.ServicesDetailsPage),
+    import('./custom-service' /* webpackChunkName: "custom-service" */).then(
+      (m) => m.ServicesDetailsPage,
+    ),
   )
   .set(referenceForModel(IngressModel), () =>
     import('./ingress' /* webpackChunkName: "ingress" */).then((m) => m.IngressesDetailsPage),
@@ -424,7 +426,7 @@ export const baseListPages = ImmutableMap<ResourceMapKey, ResourceMapValue>()
     ),
   )
   .set(referenceForModel(ServiceModel), () =>
-    import('./service' /* webpackChunkName: "service" */).then((m) => m.ServicesPage),
+    import('./custom-service' /* webpackChunkName: "custom-service" */).then((m) => m.ServicesPage),
   )
   .set(referenceForModel(IngressModel), () =>
     import('./ingress' /* webpackChunkName: "ingress" */).then((m) => m.IngressesPage),

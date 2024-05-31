@@ -1,0 +1,35 @@
+.co-create-service {
+  &__alert {
+    margin-bottom: 0;
+  }
+}
+
+.co-create-service__add-service-btn {
+  margin-bottom: 15px;
+}
+
+.co-create-service__externaltrafficpolicy {
+  margin-top: 10px;
+}
+
+.co-create-service__ports-list {
+  @media (min-width: 1200px) {
+        max-width: 88.4%;
+  }
+  @media (min-width: 992px) {
+      min-width: 592px;
+    }
+
+}
+
+.co-create-service__ports-list > .pf-c-dropdown {
+  width: 100%
+}
+
+.service-protocol-btn-group div {
+  width: 100%
+}
+
+.service-protocol-btn-group button {
+  width: 100%
+}
