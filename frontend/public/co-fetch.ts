@@ -74,6 +74,7 @@ export const validateStatus = async (
   }
 
   if (response.status === 401 && shouldLogout(url)) {
+    console.log('logout');
     authSvc.logout(window.location.pathname, getActiveCluster(storeHandler.getStore()?.getState()));
   }
 
@@ -140,9 +141,10 @@ export const appInternalFetch = async (url: string, options: RequestInit): Promi
     retry = false;
     attempt++;
     try {
-      response = await fetch(url, allOptions).then((resp) =>
-        validateStatus(resp, url, allOptions.method, attempt < 3),
-      );
+      response = await fetch(url, allOptions).then((resp) => {
+        console.log('validate status');
+        return validateStatus(resp, url, allOptions.method, attempt < 3);
+      });
     } catch (e) {
       if (e instanceof RetryError) {
         retry = true;
